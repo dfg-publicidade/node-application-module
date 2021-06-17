@@ -1,5 +1,5 @@
 import App from '@dfgpublicidade/node-app-module';
-import { Application, Router } from 'express-ws';
+import { Application, Router } from 'express';
 declare abstract class AppBuilder {
     protected express: Application;
     protected app: App;

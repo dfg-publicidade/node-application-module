@@ -15,7 +15,9 @@ class AppBuilder {
     }
     build() {
         debug('Building application');
-        this.express = express_ws_1.default(express_1.default()).app;
+        this.express = this.app.config.ws.enabled
+            ? express_ws_1.default(express_1.default()).app
+            : express_1.default();
         this.setDependences();
         this.setInterceptions();
         this.setParsers();

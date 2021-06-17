@@ -1,8 +1,8 @@
 import App from '@dfgpublicidade/node-app-module';
 import { CacheController, RootController, StatusController } from '@dfgpublicidade/node-controllers-module';
 import appDebugger from 'debug';
-import express from 'express';
-import expressWs, { Application, Router } from 'express-ws';
+import express, { Application, Router } from 'express';
+import expressWs from 'express-ws';
 
 /* Module */
 const debug: appDebugger.IDebugger = appDebugger('module:app-builder');
@@ -18,7 +18,9 @@ abstract class AppBuilder {
     public build(): Application {
         debug('Building application');
 
-        this.express = expressWs(express()).app;
+        this.express = this.app.config.ws.enabled
+            ? expressWs(express()).app
+            : express();
 
         this.setDependences();
         this.setInterceptions();
