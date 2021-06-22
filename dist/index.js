@@ -21,11 +21,11 @@ let taskServer;
 class Application {
     async start() {
         try {
-            const appInfo = await node_files_module_1.default.getJson(`${app_root_path_1.default}/app.json`);
+            this.appInfo = await node_files_module_1.default.getJson(`${app_root_path_1.default}/app.json`);
             await this.runStartupScripts();
             await this.startDatabases();
             const app = new node_app_module_1.default({
-                appInfo,
+                appInfo: this.appInfo,
                 config
             });
             await this.setComplAppInfo();

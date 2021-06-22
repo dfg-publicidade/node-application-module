@@ -14,16 +14,18 @@ let appServer: AppServer;
 let taskServer: TaskServer;
 
 abstract class Application {
+    protected appInfo: AppInfo;
+
     public async start(): Promise<(AppServer | TaskServer)[]> {
         try {
-            const appInfo: AppInfo = await Files.getJson(`${appRoot}/app.json`);
+            this.appInfo = await Files.getJson(`${appRoot}/app.json`);
 
             await this.runStartupScripts();
 
             await this.startDatabases();
 
             const app: App = new App({
-                appInfo,
+                appInfo: this.appInfo,
                 config
             });
 
