@@ -85,7 +85,7 @@ class TaskServer {
                 try {
                     debug('Task found, running...');
 
-                    result = await this.runner.run(this.app, task);
+                    result = await this.runner.run(this.app, this.taskManager, task);
                     status = 'SUCCESS';
 
                     debug('Task performed successfully');
@@ -114,7 +114,7 @@ class TaskServer {
                     return this.taskManager.afterTask(error);
                 }
 
-                if (task.getInterval() && (status === 'SUCCESS' || task.isPersistent())) {
+                if (this.taskManager.getInterval(task) && (status === 'SUCCESS' || this.taskManager.isPersistent(task))) {
                     debug('The task must be replicated. Cloning...');
 
                     try {

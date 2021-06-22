@@ -59,7 +59,7 @@ class TaskServer {
                 let taskError;
                 try {
                     debug('Task found, running...');
-                    result = await this.runner.run(this.app, task);
+                    result = await this.runner.run(this.app, this.taskManager, task);
                     status = 'SUCCESS';
                     debug('Task performed successfully');
                 }
@@ -82,7 +82,7 @@ class TaskServer {
                     debug('An error was occurred when updating the status of the finished task');
                     return this.taskManager.afterTask(error);
                 }
-                if (task.getInterval() && (status === 'SUCCESS' || task.isPersistent())) {
+                if (this.taskManager.getInterval(task) && (status === 'SUCCESS' || this.taskManager.isPersistent(task))) {
                     debug('The task must be replicated. Cloning...');
                     try {
                         const clonedTask = await this.taskManager.cloneTask(task);
