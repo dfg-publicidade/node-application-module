@@ -7,7 +7,7 @@ import expressWs from 'express-ws';
 /* Module */
 const debug: appDebugger.IDebugger = appDebugger('module:app-builder');
 
-abstract class AppBuilder {
+abstract class DefaultAppBuilder {
     protected express: Application;
     protected app: App;
 
@@ -72,4 +72,4 @@ abstract class AppBuilder {
     protected abstract setErrorHandling(app: App): void;
 }
 
-export default AppBuilder;
+export default DefaultAppBuilder;

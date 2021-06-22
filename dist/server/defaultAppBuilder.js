@@ -9,7 +9,7 @@ const express_1 = __importDefault(require("express"));
 const express_ws_1 = __importDefault(require("express-ws"));
 /* Module */
 const debug = debug_1.default('module:app-builder');
-class AppBuilder {
+class DefaultAppBuilder {
     constructor(app) {
         this.app = app;
     }
@@ -43,4 +43,4 @@ class AppBuilder {
         }
     }
 }
-exports.default = AppBuilder;
+exports.default = DefaultAppBuilder;
