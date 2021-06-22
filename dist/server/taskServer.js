@@ -71,9 +71,9 @@ class TaskServer {
                 try {
                     task = await this.taskManager.update(task, {
                         status,
-                        error: taskError,
-                        termino: new Date(),
-                        resultado: result
+                        endDate: new Date(),
+                        result,
+                        error: taskError
                     });
                     await this.taskManager.sendToSolved(task);
                     await this.taskManager.delete(task);
