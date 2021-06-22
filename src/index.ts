@@ -3,6 +3,7 @@ import Files from '@dfgpublicidade/node-files-module';
 import { DefaultTaskManager } from '@dfgpublicidade/node-tasks-module';
 import appRoot from 'app-root-path';
 import cfg from 'config';
+import { Db } from 'mongodb';
 import AppServer from './server/appServer';
 import DefaultAppBuilder from './server/defaultAppBuilder';
 import TaskServer from './server/taskServer';
@@ -15,6 +16,8 @@ let taskServer: TaskServer;
 
 abstract class Application {
     protected appInfo: AppInfo;
+    protected connectionName: string;
+    protected db: Db;
     protected app: App;
 
     public async start(): Promise<(AppServer | TaskServer)[]> {
@@ -25,12 +28,14 @@ abstract class Application {
 
             await this.startDatabases();
 
+            await this.setComplAppInfo();
+
             this.app = new App({
                 appInfo: this.appInfo,
-                config
+                config,
+                connectionName: this.connectionName,
+                db: this.db
             });
-
-            await this.setComplAppInfo();
 
             await this.startTranslation();
 

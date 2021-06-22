@@ -24,11 +24,13 @@ class Application {
             this.appInfo = await node_files_module_1.default.getJson(`${app_root_path_1.default}/app.json`);
             await this.runStartupScripts();
             await this.startDatabases();
+            await this.setComplAppInfo();
             this.app = new node_app_module_1.default({
                 appInfo: this.appInfo,
-                config
+                config,
+                connectionName: this.connectionName,
+                db: this.db
             });
-            await this.setComplAppInfo();
             await this.startTranslation();
             const servers = [];
             if (!this.app.info.taskServer) {
