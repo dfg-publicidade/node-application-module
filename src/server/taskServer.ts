@@ -6,7 +6,7 @@ import { CronJob } from 'cron';
 import appDebugger from 'debug';
 
 /* Module */
-const debug: appDebugger.IDebugger = appDebugger('module:server');
+const debug: appDebugger.IDebugger = appDebugger('module:task-server');
 
 class TaskServer {
     private app: App;
