@@ -3,6 +3,7 @@ import Files from '@dfgpublicidade/node-files-module';
 import { DefaultTaskManager } from '@dfgpublicidade/node-tasks-module';
 import appRoot from 'app-root-path';
 import cfg from 'config';
+import appDebugger from 'debug';
 import { Db } from 'mongodb';
 import AppServer from './server/appServer';
 import DefaultAppBuilder from './server/defaultAppBuilder';
@@ -14,6 +15,8 @@ const config: any = { ...cfg };
 let appServer: AppServer;
 let taskServer: TaskServer;
 
+const debug: appDebugger.IDebugger = appDebugger('module:app');
+
 abstract class Application {
     protected appInfo: AppInfo;
     protected connectionName: string;
@@ -22,12 +25,19 @@ abstract class Application {
 
     public async start(): Promise<(AppServer | TaskServer)[]> {
         try {
+            debug('Starting application');
+
             this.appInfo = await Files.getJson(`${appRoot}/app.json`);
 
+            debug('App info. loaded');
+
+            debug('Running startup scripts...');
             await this.runStartupScripts();
 
+            debug('Starting databases...');
             await this.startDatabases();
 
+            debug('Setting complementar app info.');
             await this.setComplAppInfo();
 
             this.app = new App({
@@ -37,15 +47,18 @@ abstract class Application {
                 db: this.db
             });
 
+            debug('Starting translation...');
             await this.startTranslation();
 
             const servers: Promise<(AppServer | TaskServer)>[] = [];
 
             if (!this.app.info.taskServer) {
+                debug('Starting app server...');
                 servers.push(this.startAppServer());
             }
 
             if (this.app.info.taskServer) {
+                debug('Starting task server...');
                 servers.push(this.startTaskServer());
             }
 
@@ -96,6 +109,8 @@ abstract class Application {
 
         await appServer.start(config);
 
+        debug('App server started');
+
         return Promise.resolve(appServer);
     }
 
@@ -107,6 +122,8 @@ abstract class Application {
         taskServer = new TaskServer(this.app, await this.createTaskManager());
 
         await taskServer.start();
+
+        debug('Task server started');
 
         return Promise.resolve(taskServer);
     }

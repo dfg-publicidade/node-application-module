@@ -8,6 +8,7 @@ const node_app_module_1 = __importDefault(require("@dfgpublicidade/node-app-modu
 const node_files_module_1 = __importDefault(require("@dfgpublicidade/node-files-module"));
 const app_root_path_1 = __importDefault(require("app-root-path"));
 const config_1 = __importDefault(require("config"));
+const debug_1 = __importDefault(require("debug"));
 const appServer_1 = __importDefault(require("./server/appServer"));
 exports.AppServer = appServer_1.default;
 const defaultAppBuilder_1 = __importDefault(require("./server/defaultAppBuilder"));
@@ -18,12 +19,18 @@ const config = Object.assign({}, config_1.default);
 /* Module */
 let appServer;
 let taskServer;
+const debug = debug_1.default('module:app');
 class Application {
     async start() {
         try {
+            debug('Starting application');
             this.appInfo = await node_files_module_1.default.getJson(`${app_root_path_1.default}/app.json`);
+            debug('App info. loaded');
+            debug('Running startup scripts...');
             await this.runStartupScripts();
+            debug('Starting databases...');
             await this.startDatabases();
+            debug('Setting complementar app info.');
             await this.setComplAppInfo();
             this.app = new node_app_module_1.default({
                 appInfo: this.appInfo,
@@ -31,12 +38,15 @@ class Application {
                 connectionName: this.connectionName,
                 db: this.db
             });
+            debug('Starting translation...');
             await this.startTranslation();
             const servers = [];
             if (!this.app.info.taskServer) {
+                debug('Starting app server...');
                 servers.push(this.startAppServer());
             }
             if (this.app.info.taskServer) {
+                debug('Starting task server...');
                 servers.push(this.startTaskServer());
             }
             return Promise.all(servers);
@@ -75,6 +85,7 @@ class Application {
         const appBuilder = await this.createAppBuilder();
         appServer = new appServer_1.default(appBuilder);
         await appServer.start(config);
+        debug('App server started');
         return Promise.resolve(appServer);
     }
     async startTaskServer() {
@@ -83,6 +94,7 @@ class Application {
         }
         taskServer = new taskServer_1.default(this.app, await this.createTaskManager());
         await taskServer.start();
+        debug('Task server started');
         return Promise.resolve(taskServer);
     }
 }
