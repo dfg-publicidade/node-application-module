@@ -9,18 +9,10 @@ const debug_1 = __importDefault(require("debug"));
 /* Module */
 const debug = debug_1.default('module:server');
 class TaskServer {
-    constructor(app, taskManager, afterTask, afterCron) {
+    constructor(app, taskManager) {
         debug('Building task server');
         this.app = app;
         this.taskManager = taskManager;
-        this.afterTask = (async () => Promise.resolve());
-        this.afterCron = (async () => Promise.resolve());
-        if (afterTask) {
-            this.afterTask = afterTask;
-        }
-        if (afterCron) {
-            this.afterCron = afterCron;
-        }
         this.runner = new node_tasks_module_1.Runner();
         this.cron = new cron_1.CronJob(app.config.tarefas.periodo, async () => this.nextTask(), async () => this.cronFinish(), false, process.env.TZ);
     }
@@ -59,7 +51,7 @@ class TaskServer {
         try {
             let task = await this.taskManager.getNext();
             if (!task) {
-                return this.afterTask(undefined);
+                return this.taskManager.afterTask(undefined);
             }
             else {
                 let status;
@@ -88,32 +80,32 @@ class TaskServer {
                 }
                 catch (error) {
                     debug('An error was occurred when updating the status of the finished task');
-                    return this.afterTask(error);
+                    return this.taskManager.afterTask(error);
                 }
                 if (task.getInterval() && (status === 'SUCCESS' || task.isPersistent())) {
                     debug('The task must be replicated. Cloning...');
                     try {
                         const clonedTask = await this.taskManager.cloneTask(task);
-                        return this.afterTask(clonedTask);
+                        return this.taskManager.afterTask(clonedTask);
                     }
                     catch (error) {
                         debug('An error has occurred when replicating the task');
-                        return this.afterTask(error);
+                        return this.taskManager.afterTask(error);
                     }
                 }
                 else {
-                    return this.afterTask(task);
+                    return this.taskManager.afterTask(task);
                 }
             }
         }
         catch (error) {
             debug('An error has occurred when searching for new tasks');
-            this.afterTask(error);
+            this.taskManager.afterTask(error);
         }
     }
     async cronFinish() {
         debug('Task server is finished');
-        return this.afterCron();
+        return this.taskManager.afterCron();
     }
 }
 exports.default = TaskServer;

@@ -11,26 +11,14 @@ const debug: appDebugger.IDebugger = appDebugger('module:server');
 class TaskServer {
     private app: App;
     private taskManager: DefaultTaskManager;
-    private afterTask: (result?: any) => Promise<void>;
-    private afterCron: (result?: any) => Promise<void>;
     private cron: CronJob;
     private runner: Runner;
 
-    public constructor(app: App, taskManager: DefaultTaskManager, afterTask?: (result?: any) => Promise<any>, afterCron?: (result?: any) => Promise<any>) {
+    public constructor(app: App, taskManager: DefaultTaskManager) {
         debug('Building task server');
 
         this.app = app;
         this.taskManager = taskManager;
-
-        this.afterTask = (async (): Promise<void> => Promise.resolve());
-        this.afterCron = (async (): Promise<void> => Promise.resolve());
-
-        if (afterTask) {
-            this.afterTask = afterTask;
-        }
-        if (afterCron) {
-            this.afterCron = afterCron;
-        }
 
         this.runner = new Runner();
 
@@ -87,7 +75,7 @@ class TaskServer {
             let task: Task = await this.taskManager.getNext();
 
             if (!task) {
-                return this.afterTask(undefined);
+                return this.taskManager.afterTask(undefined);
             }
             else {
                 let status: string;
@@ -123,7 +111,7 @@ class TaskServer {
                 }
                 catch (error) {
                     debug('An error was occurred when updating the status of the finished task');
-                    return this.afterTask(error);
+                    return this.taskManager.afterTask(error);
                 }
 
                 if (task.getInterval() && (status === 'SUCCESS' || task.isPersistent())) {
@@ -131,27 +119,27 @@ class TaskServer {
 
                     try {
                         const clonedTask: Task = await this.taskManager.cloneTask(task);
-                        return this.afterTask(clonedTask);
+                        return this.taskManager.afterTask(clonedTask);
                     }
                     catch (error) {
                         debug('An error has occurred when replicating the task');
-                        return this.afterTask(error);
+                        return this.taskManager.afterTask(error);
                     }
                 }
                 else {
-                    return this.afterTask(task);
+                    return this.taskManager.afterTask(task);
                 }
             }
         }
         catch (error) {
             debug('An error has occurred when searching for new tasks');
-            this.afterTask(error);
+            this.taskManager.afterTask(error);
         }
     }
 
     private async cronFinish(): Promise<void> {
         debug('Task server is finished');
-        return this.afterCron();
+        return this.taskManager.afterCron();
     }
 }
 
