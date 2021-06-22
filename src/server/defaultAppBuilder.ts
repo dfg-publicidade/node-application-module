@@ -18,7 +18,7 @@ abstract class DefaultAppBuilder {
     public build(): Application {
         debug('Building application');
 
-        this.express = this.app.config.ws.enabled
+        this.express = this.app.config.websocket.enabled
             ? expressWs(express()).app
             : express();
 

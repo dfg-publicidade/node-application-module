@@ -15,7 +15,7 @@ class DefaultAppBuilder {
     }
     build() {
         debug('Building application');
-        this.express = this.app.config.ws.enabled
+        this.express = this.app.config.websocket.enabled
             ? express_ws_1.default(express_1.default()).app
             : express_1.default();
         this.setDependences();
