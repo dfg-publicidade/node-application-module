@@ -15,6 +15,7 @@ let taskServer: TaskServer;
 
 abstract class Application {
     protected appInfo: AppInfo;
+    protected app: App;
 
     public async start(): Promise<(AppServer | TaskServer)[]> {
         try {
@@ -24,7 +25,7 @@ abstract class Application {
 
             await this.startDatabases();
 
-            const app: App = new App({
+            this.app = new App({
                 appInfo: this.appInfo,
                 config
             });
@@ -35,12 +36,12 @@ abstract class Application {
 
             const servers: Promise<(AppServer | TaskServer)>[] = [];
 
-            if (!app.info.taskServer) {
-                servers.push(this.startAppServer(app));
+            if (!this.app.info.taskServer) {
+                servers.push(this.startAppServer());
             }
 
-            if (app.info.taskServer) {
-                servers.push(this.startTaskServer(app));
+            if (this.app.info.taskServer) {
+                servers.push(this.startTaskServer());
             }
 
             return Promise.all(servers);
@@ -80,7 +81,7 @@ abstract class Application {
         return Promise.reject();
     }
 
-    private async startAppServer(app: App): Promise<AppServer> {
+    private async startAppServer(): Promise<AppServer> {
         if (appServer) {
             return Promise.resolve(appServer);
         }
@@ -93,12 +94,12 @@ abstract class Application {
         return Promise.resolve(appServer);
     }
 
-    private async startTaskServer(app: App): Promise<TaskServer> {
+    private async startTaskServer(): Promise<TaskServer> {
         if (taskServer) {
             return Promise.resolve(taskServer);
         }
 
-        taskServer = new TaskServer(app, await this.createTaskManager());
+        taskServer = new TaskServer(this.app, await this.createTaskManager());
 
         await taskServer.start();
 

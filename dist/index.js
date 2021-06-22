@@ -24,18 +24,18 @@ class Application {
             this.appInfo = await node_files_module_1.default.getJson(`${app_root_path_1.default}/app.json`);
             await this.runStartupScripts();
             await this.startDatabases();
-            const app = new node_app_module_1.default({
+            this.app = new node_app_module_1.default({
                 appInfo: this.appInfo,
                 config
             });
             await this.setComplAppInfo();
             await this.startTranslation();
             const servers = [];
-            if (!app.info.taskServer) {
-                servers.push(this.startAppServer(app));
+            if (!this.app.info.taskServer) {
+                servers.push(this.startAppServer());
             }
-            if (app.info.taskServer) {
-                servers.push(this.startTaskServer(app));
+            if (this.app.info.taskServer) {
+                servers.push(this.startTaskServer());
             }
             return Promise.all(servers);
         }
@@ -66,7 +66,7 @@ class Application {
     async createTaskManager() {
         return Promise.reject();
     }
-    async startAppServer(app) {
+    async startAppServer() {
         if (appServer) {
             return Promise.resolve(appServer);
         }
@@ -75,11 +75,11 @@ class Application {
         await appServer.start(config);
         return Promise.resolve(appServer);
     }
-    async startTaskServer(app) {
+    async startTaskServer() {
         if (taskServer) {
             return Promise.resolve(taskServer);
         }
-        taskServer = new taskServer_1.default(app, await this.createTaskManager());
+        taskServer = new taskServer_1.default(this.app, await this.createTaskManager());
         await taskServer.start();
         return Promise.resolve(taskServer);
     }

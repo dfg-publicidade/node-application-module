@@ -1,10 +1,11 @@
-import { AppInfo } from '@dfgpublicidade/node-app-module';
+import App, { AppInfo } from '@dfgpublicidade/node-app-module';
 import { DefaultTaskManager } from '@dfgpublicidade/node-tasks-module';
 import AppServer from './server/appServer';
 import DefaultAppBuilder from './server/defaultAppBuilder';
 import TaskServer from './server/taskServer';
 declare abstract class Application {
     protected appInfo: AppInfo;
+    protected app: App;
     start(): Promise<(AppServer | TaskServer)[]>;
     protected runStartupScripts(): Promise<void>;
     protected setComplAppInfo(): Promise<void>;
