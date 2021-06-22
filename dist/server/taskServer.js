@@ -14,7 +14,7 @@ class TaskServer {
         this.app = app;
         this.taskManager = taskManager;
         this.runner = new node_tasks_module_1.Runner();
-        this.cron = new cron_1.CronJob(app.config.tarefas.periodo, async () => this.nextTask(), async () => this.cronFinish(), false, process.env.TZ);
+        this.cron = new cron_1.CronJob(app.config.tasks.period, async () => this.nextTask(), async () => this.cronFinish(), false, process.env.TZ);
     }
     async start() {
         debug('Starting task server');

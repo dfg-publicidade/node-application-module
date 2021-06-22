@@ -23,7 +23,7 @@ class TaskServer {
         this.runner = new Runner();
 
         this.cron = new CronJob(
-            app.config.tarefas.periodo,
+            app.config.tasks.period,
             async (): Promise<void> => this.nextTask(),
             async (): Promise<void> => this.cronFinish(),
             false,
