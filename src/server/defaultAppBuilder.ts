@@ -40,23 +40,23 @@ abstract class DefaultAppBuilder {
         debug('Enabling routing');
 
         if (this.app.info.name === 'base' || this.app.info.name === endpointGroup) {
-            const router: Router = express.Router();
+            this.router = express.Router();
 
-            router.options('/', RootController.options(this.app, 'GET'));
-            router.get('/', RootController.main());
+            this.router.options('/', RootController.options(this.app, 'GET'));
+            this.router.get('/', RootController.main());
 
-            router.options('/cache', CacheController.options(this.app, 'DELETE'));
-            router.delete('/cache', CacheController.clean(this.app));
+            this.router.options('/cache', CacheController.options(this.app, 'DELETE'));
+            this.router.delete('/cache', CacheController.clean(this.app));
 
             this.setAdditionalControllers();
 
-            routerSetup(this.app, router);
+            routerSetup(this.app, this.router);
 
             this.express.use(
                 process.env.NODE_ENV !== 'development'
                     ? '/'
                     : `/${endpointGroup}/${this.app.info.version}`
-                , router
+                , this.router
             );
         }
     }

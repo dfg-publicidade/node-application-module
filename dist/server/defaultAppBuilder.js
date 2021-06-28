@@ -29,16 +29,16 @@ class DefaultAppBuilder {
     createRouter(endpointGroup, routerSetup) {
         debug('Enabling routing');
         if (this.app.info.name === 'base' || this.app.info.name === endpointGroup) {
-            const router = express_1.default.Router();
-            router.options('/', node_controllers_module_1.RootController.options(this.app, 'GET'));
-            router.get('/', node_controllers_module_1.RootController.main());
-            router.options('/cache', node_controllers_module_1.CacheController.options(this.app, 'DELETE'));
-            router.delete('/cache', node_controllers_module_1.CacheController.clean(this.app));
+            this.router = express_1.default.Router();
+            this.router.options('/', node_controllers_module_1.RootController.options(this.app, 'GET'));
+            this.router.get('/', node_controllers_module_1.RootController.main());
+            this.router.options('/cache', node_controllers_module_1.CacheController.options(this.app, 'DELETE'));
+            this.router.delete('/cache', node_controllers_module_1.CacheController.clean(this.app));
             this.setAdditionalControllers();
-            routerSetup(this.app, router);
+            routerSetup(this.app, this.router);
             this.express.use(process.env.NODE_ENV !== 'development'
                 ? '/'
-                : `/${endpointGroup}/${this.app.info.version}`, router);
+                : `/${endpointGroup}/${this.app.info.version}`, this.router);
         }
     }
 }
