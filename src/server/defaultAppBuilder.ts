@@ -69,9 +69,9 @@ abstract class DefaultAppBuilder {
 
     protected abstract setRouting(): void;
 
-    protected abstract setErrorHandling(): void;
-
     protected abstract setAdditionalControllers(): void;
+
+    protected abstract setErrorHandling(): void;
 }
 
 export default DefaultAppBuilder;
