@@ -21,24 +21,24 @@ class DefaultAppBuilder {
         this.setDependences();
         this.setInterceptions();
         this.setParsers();
-        this.setRouting(this.app);
-        this.setErrorHandling(this.app);
+        this.setRouting();
+        this.setErrorHandling();
         debug('Application started');
         return this.express;
     }
-    createRouter(app, endpointGroup, routerSetup) {
+    createRouter(endpointGroup, routerSetup) {
         debug('Enabling routing');
-        if (app.info.name === 'base' || app.info.name === endpointGroup) {
+        if (this.app.info.name === 'base' || this.app.info.name === endpointGroup) {
             const router = express_1.default.Router();
             router.options('/', node_controllers_module_1.RootController.options(this.app, 'GET'));
             router.get('/', node_controllers_module_1.RootController.main());
-            router.options('/cache', node_controllers_module_1.CacheController.options(app, 'DELETE'));
-            router.delete('/cache', node_controllers_module_1.CacheController.clean(app));
-            this.setAdditionalControllers(app, router);
-            routerSetup(app, router);
+            router.options('/cache', node_controllers_module_1.CacheController.options(this.app, 'DELETE'));
+            router.delete('/cache', node_controllers_module_1.CacheController.clean(this.app));
+            this.setAdditionalControllers();
+            routerSetup(router);
             this.express.use(process.env.NODE_ENV !== 'development'
                 ? '/'
-                : `/${endpointGroup}/${app.info.version}`, router);
+                : `/${endpointGroup}/${this.app.info.version}`, router);
         }
     }
 }

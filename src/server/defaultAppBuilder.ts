@@ -10,6 +10,7 @@ const debug: appDebugger.IDebugger = appDebugger('module:app-builder');
 abstract class DefaultAppBuilder {
     protected express: Application;
     protected app: App;
+    protected router: Router;
 
     public constructor(app: App) {
         this.app = app;
@@ -26,35 +27,35 @@ abstract class DefaultAppBuilder {
         this.setInterceptions();
         this.setParsers();
 
-        this.setRouting(this.app);
+        this.setRouting();
 
-        this.setErrorHandling(this.app);
+        this.setErrorHandling();
 
         debug('Application started');
 
         return this.express;
     }
 
-    protected createRouter(app: App, endpointGroup: string, routerSetup: (app: App, router: Router) => void): void {
+    protected createRouter(endpointGroup: string, routerSetup: (router: Router) => void): void {
         debug('Enabling routing');
 
-        if (app.info.name === 'base' || app.info.name === endpointGroup) {
+        if (this.app.info.name === 'base' || this.app.info.name === endpointGroup) {
             const router: Router = express.Router();
 
             router.options('/', RootController.options(this.app, 'GET'));
             router.get('/', RootController.main());
 
-            router.options('/cache', CacheController.options(app, 'DELETE'));
-            router.delete('/cache', CacheController.clean(app));
+            router.options('/cache', CacheController.options(this.app, 'DELETE'));
+            router.delete('/cache', CacheController.clean(this.app));
 
-            this.setAdditionalControllers(app, router);
+            this.setAdditionalControllers();
 
-            routerSetup(app, router);
+            routerSetup(router);
 
             this.express.use(
                 process.env.NODE_ENV !== 'development'
                     ? '/'
-                    : `/${endpointGroup}/${app.info.version}`
+                    : `/${endpointGroup}/${this.app.info.version}`
                 , router
             );
         }
@@ -66,11 +67,11 @@ abstract class DefaultAppBuilder {
 
     protected abstract setParsers(): void;
 
-    protected abstract setRouting(app: App): void;
+    protected abstract setRouting(): void;
 
-    protected abstract setErrorHandling(app: App): void;
+    protected abstract setErrorHandling(): void;
 
-    protected abstract setAdditionalControllers(app: App, router: Router): void;
+    protected abstract setAdditionalControllers(): void;
 }
 
 export default DefaultAppBuilder;
