@@ -1,5 +1,5 @@
 import App from '@dfgpublicidade/node-app-module';
-import { CacheController, RootController, StatusController } from '@dfgpublicidade/node-controllers-module';
+import { CacheController, RootController } from '@dfgpublicidade/node-controllers-module';
 import appDebugger from 'debug';
 import express, { Application, Router } from 'express';
 import expressWs from 'express-ws';
@@ -44,11 +44,10 @@ abstract class DefaultAppBuilder {
             router.options('/', RootController.options(this.app, 'GET'));
             router.get('/', RootController.main());
 
-            router.options('/status', StatusController.options(this.app, 'GET'));
-            router.get('/status', StatusController.view(this.app));
-
             router.options('/cache', CacheController.options(app, 'DELETE'));
             router.delete('/cache', CacheController.clean(app));
+
+            this.setAdditionalControllers(app, router);
 
             routerSetup(app, router);
 
@@ -70,6 +69,8 @@ abstract class DefaultAppBuilder {
     protected abstract setRouting(app: App): void;
 
     protected abstract setErrorHandling(app: App): void;
+
+    protected abstract setAdditionalControllers(app: App, router: Router): void;
 }
 
 export default DefaultAppBuilder;

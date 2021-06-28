@@ -11,5 +11,6 @@ declare abstract class DefaultAppBuilder {
     protected abstract setParsers(): void;
     protected abstract setRouting(app: App): void;
     protected abstract setErrorHandling(app: App): void;
+    protected abstract setAdditionalControllers(app: App, router: Router): void;
 }
 export default DefaultAppBuilder;
