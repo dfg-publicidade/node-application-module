@@ -36,7 +36,7 @@ abstract class DefaultAppBuilder {
         return this.express;
     }
 
-    protected createRouter(endpointGroup: string, routerSetup: (router: Router) => void): void {
+    protected createRouter(endpointGroup: string, routerSetup: (app: App, router: Router) => void): void {
         debug('Enabling routing');
 
         if (this.app.info.name === 'base' || this.app.info.name === endpointGroup) {
@@ -50,7 +50,7 @@ abstract class DefaultAppBuilder {
 
             this.setAdditionalControllers();
 
-            routerSetup(router);
+            routerSetup(this.app, router);
 
             this.express.use(
                 process.env.NODE_ENV !== 'development'

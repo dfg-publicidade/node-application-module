@@ -35,7 +35,7 @@ class DefaultAppBuilder {
             router.options('/cache', node_controllers_module_1.CacheController.options(this.app, 'DELETE'));
             router.delete('/cache', node_controllers_module_1.CacheController.clean(this.app));
             this.setAdditionalControllers();
-            routerSetup(router);
+            routerSetup(this.app, router);
             this.express.use(process.env.NODE_ENV !== 'development'
                 ? '/'
                 : `/${endpointGroup}/${this.app.info.version}`, router);
