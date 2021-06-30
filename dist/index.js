@@ -30,9 +30,12 @@ class Application {
             await this.runStartupScripts();
             debug('Starting databases...');
             await this.startDatabases();
+            this.app = new node_app_module_1.default({
+                appInfo: this.appInfo,
+                config
+            });
             debug('Setting complementar app info.');
-            const complAppInfo = await this.getComplAppInfo();
-            this.app = new node_app_module_1.default(Object.assign({ appInfo: this.appInfo, config }, complAppInfo));
+            await this.setComplAppInfo();
             debug('Starting translation...');
             await this.startTranslation();
             const servers = [];

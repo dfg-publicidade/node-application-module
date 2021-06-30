@@ -33,14 +33,13 @@ abstract class Application {
             debug('Starting databases...');
             await this.startDatabases();
 
-            debug('Setting complementar app info.');
-            const complAppInfo: any = await this.getComplAppInfo();
-
             this.app = new App({
                 appInfo: this.appInfo,
-                config,
-                ...complAppInfo
+                config
             });
+
+            debug('Setting complementar app info.');
+            await this.setComplAppInfo();
 
             debug('Starting translation...');
             await this.startTranslation();
