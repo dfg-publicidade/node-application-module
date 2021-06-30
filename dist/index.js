@@ -6,6 +6,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.TaskServer = exports.AppServer = exports.DefaultAppBuilder = void 0;
 const node_app_module_1 = __importDefault(require("@dfgpublicidade/node-app-module"));
 const node_files_module_1 = __importDefault(require("@dfgpublicidade/node-files-module"));
+const node_tasks_module_1 = require("@dfgpublicidade/node-tasks-module");
+Object.defineProperty(exports, "TaskServer", { enumerable: true, get: function () { return node_tasks_module_1.TaskServer; } });
 const app_root_path_1 = __importDefault(require("app-root-path"));
 const config_1 = __importDefault(require("config"));
 const debug_1 = __importDefault(require("debug"));
@@ -13,8 +15,6 @@ const appServer_1 = __importDefault(require("./server/appServer"));
 exports.AppServer = appServer_1.default;
 const defaultAppBuilder_1 = __importDefault(require("./server/defaultAppBuilder"));
 exports.DefaultAppBuilder = defaultAppBuilder_1.default;
-const taskServer_1 = __importDefault(require("./server/taskServer"));
-exports.TaskServer = taskServer_1.default;
 const config = Object.assign({}, config_1.default);
 /* Module */
 let appServer;
@@ -31,13 +31,8 @@ class Application {
             debug('Starting databases...');
             await this.startDatabases();
             debug('Setting complementar app info.');
-            await this.setComplAppInfo();
-            this.app = new node_app_module_1.default({
-                appInfo: this.appInfo,
-                config,
-                connectionName: this.connectionName,
-                db: this.db
-            });
+            const complAppInfo = await this.getComplAppInfo();
+            this.app = new node_app_module_1.default(Object.assign({ appInfo: this.appInfo, config }, complAppInfo));
             debug('Starting translation...');
             await this.startTranslation();
             const servers = [];
@@ -92,7 +87,7 @@ class Application {
         if (taskServer) {
             return Promise.resolve(taskServer);
         }
-        taskServer = new taskServer_1.default(this.app, await this.createTaskManager());
+        taskServer = new node_tasks_module_1.TaskServer(this.app, await this.createTaskManager());
         await taskServer.start();
         debug('Task server started');
         return Promise.resolve(taskServer);

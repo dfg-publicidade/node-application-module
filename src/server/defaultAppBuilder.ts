@@ -1,5 +1,5 @@
 import App from '@dfgpublicidade/node-app-module';
-import { CacheController, RootController } from '@dfgpublicidade/node-controllers-module';
+import { RootController } from '@dfgpublicidade/node-controllers-module';
 import appDebugger from 'debug';
 import express, { Application, Router } from 'express';
 import expressWs from 'express-ws';
@@ -44,9 +44,6 @@ abstract class DefaultAppBuilder {
 
             this.router.options('/', RootController.options(this.app, 'GET'));
             this.router.get('/', RootController.main());
-
-            this.router.options('/cache', CacheController.options(this.app, 'DELETE'));
-            this.router.delete('/cache', CacheController.clean(this.app));
 
             this.setAdditionalControllers();
 

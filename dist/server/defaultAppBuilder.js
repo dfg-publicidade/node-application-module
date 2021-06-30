@@ -32,8 +32,6 @@ class DefaultAppBuilder {
             this.router = express_1.default.Router();
             this.router.options('/', node_controllers_module_1.RootController.options(this.app, 'GET'));
             this.router.get('/', node_controllers_module_1.RootController.main());
-            this.router.options('/cache', node_controllers_module_1.CacheController.options(this.app, 'DELETE'));
-            this.router.delete('/cache', node_controllers_module_1.CacheController.clean(this.app));
             this.setAdditionalControllers();
             routerSetup(this.app, this.router);
             this.express.use(process.env.NODE_ENV !== 'development'
