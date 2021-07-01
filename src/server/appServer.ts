@@ -37,7 +37,9 @@ class AppServer {
             debug(`Listening ${Util.parsePort(addr.port)}`);
         });
 
-        expressWs(express, this.httpServer, config.websocket);
+        if (config.websocket?.enabled) {
+            expressWs(express, this.httpServer, config.websocket);
+        }
 
         this.httpServer.listen(port);
 

@@ -7,7 +7,7 @@ declare abstract class DefaultAppBuilder {
     constructor(app: App);
     build(): Application;
     protected createRouter(endpointGroup: string, routerSetup: (app: App, router: Router) => void): void;
-    protected abstract setDependences(): void;
+    protected abstract setDependencies(): void;
     protected abstract setInterceptions(): void;
     protected abstract setParsers(): void;
     protected abstract setRouting(): void;

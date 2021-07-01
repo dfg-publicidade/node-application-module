@@ -6,15 +6,15 @@ declare abstract class Application {
     protected appInfo: AppInfo;
     protected app: App;
     start(): Promise<(AppServer | TaskServer)[]>;
-    protected runStartupScripts(): Promise<void>;
-    protected setComplAppInfo(): Promise<void>;
-    protected startTranslation(): Promise<void>;
-    protected startDatabases(): Promise<any[]>;
-    protected stopDatabases(): Promise<any[]>;
-    protected createAppBuilder(): Promise<DefaultAppBuilder>;
-    protected createTaskManager(): Promise<DefaultTaskManager>;
     private startAppServer;
     private startTaskServer;
+    protected abstract runStartupScripts(): Promise<void>;
+    protected abstract setComplAppInfo(): Promise<void>;
+    protected abstract startTranslation(): Promise<void>;
+    protected abstract startDatabases(): Promise<any[]>;
+    protected abstract stopDatabases(): Promise<any[]>;
+    protected abstract createAppBuilder(): Promise<DefaultAppBuilder>;
+    protected abstract createTaskManager(): Promise<DefaultTaskManager>;
 }
 export default Application;
-export { DefaultAppBuilder, AppServer, TaskServer };
+export { DefaultAppBuilder, AppServer };

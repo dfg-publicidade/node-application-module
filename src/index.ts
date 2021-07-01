@@ -65,39 +65,7 @@ abstract class Application {
         }
     }
 
-    protected async runStartupScripts(): Promise<void> {
-        //
-    }
-
-    protected async setComplAppInfo(): Promise<void> {
-        //
-    }
-
-    protected async startTranslation(): Promise<void> {
-        //
-    }
-
-    protected async startDatabases(): Promise<any[]> {
-        return Promise.resolve([]);
-    }
-
-    protected async stopDatabases(): Promise<any[]> {
-        return Promise.resolve([]);
-    }
-
-    protected async createAppBuilder(): Promise<DefaultAppBuilder> {
-        return Promise.reject();
-    }
-
-    protected async createTaskManager(): Promise<DefaultTaskManager> {
-        return Promise.reject();
-    }
-
     private async startAppServer(): Promise<AppServer> {
-        if (appServer) {
-            return Promise.resolve(appServer);
-        }
-
         const appBuilder: DefaultAppBuilder = await this.createAppBuilder();
         appServer = new AppServer(appBuilder);
 
@@ -109,10 +77,6 @@ abstract class Application {
     }
 
     private async startTaskServer(): Promise<TaskServer> {
-        if (taskServer) {
-            return Promise.resolve(taskServer);
-        }
-
         taskServer = new TaskServer(this.app, await this.createTaskManager());
 
         await taskServer.start();
@@ -121,7 +85,21 @@ abstract class Application {
 
         return Promise.resolve(taskServer);
     }
+
+    protected abstract runStartupScripts(): Promise<void>;
+
+    protected abstract setComplAppInfo(): Promise<void>;
+
+    protected abstract startTranslation(): Promise<void>;
+
+    protected abstract startDatabases(): Promise<any[]>;
+
+    protected abstract stopDatabases(): Promise<any[]>;
+
+    protected abstract createAppBuilder(): Promise<DefaultAppBuilder>;
+
+    protected abstract createTaskManager(): Promise<DefaultTaskManager>;
 }
 
 export default Application;
-export { DefaultAppBuilder, AppServer, TaskServer };
+export { DefaultAppBuilder, AppServer };

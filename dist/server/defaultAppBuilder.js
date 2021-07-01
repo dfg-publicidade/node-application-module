@@ -14,11 +14,12 @@ class DefaultAppBuilder {
         this.app = app;
     }
     build() {
+        var _a;
         debug('Building application');
-        this.express = this.app.config.websocket.enabled
+        this.express = ((_a = this.app.config.websocket) === null || _a === void 0 ? void 0 : _a.enabled)
             ? express_ws_1.default(express_1.default()).app
             : express_1.default();
-        this.setDependences();
+        this.setDependencies();
         this.setInterceptions();
         this.setParsers();
         this.setRouting();

@@ -19,11 +19,11 @@ abstract class DefaultAppBuilder {
     public build(): Application {
         debug('Building application');
 
-        this.express = this.app.config.websocket.enabled
+        this.express = this.app.config.websocket?.enabled
             ? expressWs(express()).app
             : express();
 
-        this.setDependences();
+        this.setDependencies();
         this.setInterceptions();
         this.setParsers();
 
@@ -58,7 +58,7 @@ abstract class DefaultAppBuilder {
         }
     }
 
-    protected abstract setDependences(): void;
+    protected abstract setDependencies(): void;
 
     protected abstract setInterceptions(): void;
 

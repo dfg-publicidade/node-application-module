@@ -15,6 +15,7 @@ class AppServer {
         this.appBuilder = appBuilder;
     }
     async start(config) {
+        var _a;
         debug('Starting server');
         const port = node_util_module_1.default.normalizePort(process.env.HTTP_PORT || config.api.port || '3000');
         const express = this.appBuilder.build();
@@ -27,7 +28,9 @@ class AppServer {
             const addr = this.httpServer.address();
             debug(`Listening ${node_util_module_1.default.parsePort(addr.port)}`);
         });
-        express_ws_1.default(express, this.httpServer, config.websocket);
+        if ((_a = config.websocket) === null || _a === void 0 ? void 0 : _a.enabled) {
+            express_ws_1.default(express, this.httpServer, config.websocket);
+        }
         this.httpServer.listen(port);
         return Promise.resolve();
     }

@@ -3,11 +3,10 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.TaskServer = exports.AppServer = exports.DefaultAppBuilder = void 0;
+exports.AppServer = exports.DefaultAppBuilder = void 0;
 const node_app_module_1 = __importDefault(require("@dfgpublicidade/node-app-module"));
 const node_files_module_1 = __importDefault(require("@dfgpublicidade/node-files-module"));
 const node_tasks_module_1 = require("@dfgpublicidade/node-tasks-module");
-Object.defineProperty(exports, "TaskServer", { enumerable: true, get: function () { return node_tasks_module_1.TaskServer; } });
 const app_root_path_1 = __importDefault(require("app-root-path"));
 const config_1 = __importDefault(require("config"));
 const debug_1 = __importDefault(require("debug"));
@@ -55,31 +54,7 @@ class Application {
             await this.stopDatabases();
         }
     }
-    async runStartupScripts() {
-        //
-    }
-    async setComplAppInfo() {
-        //
-    }
-    async startTranslation() {
-        //
-    }
-    async startDatabases() {
-        return Promise.resolve([]);
-    }
-    async stopDatabases() {
-        return Promise.resolve([]);
-    }
-    async createAppBuilder() {
-        return Promise.reject();
-    }
-    async createTaskManager() {
-        return Promise.reject();
-    }
     async startAppServer() {
-        if (appServer) {
-            return Promise.resolve(appServer);
-        }
         const appBuilder = await this.createAppBuilder();
         appServer = new appServer_1.default(appBuilder);
         await appServer.start(config);
@@ -87,9 +62,6 @@ class Application {
         return Promise.resolve(appServer);
     }
     async startTaskServer() {
-        if (taskServer) {
-            return Promise.resolve(taskServer);
-        }
         taskServer = new node_tasks_module_1.TaskServer(this.app, await this.createTaskManager());
         await taskServer.start();
         debug('Task server started');
