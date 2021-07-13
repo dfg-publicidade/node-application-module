@@ -1,4 +1,4 @@
-import { serverErrorHandle } from '@dfgpublicidade/node-handler-module';
+import { ServerErrorHandler } from '@dfgpublicidade/node-handler-module';
 import Util from '@dfgpublicidade/node-util-module';
 import appDebugger from 'debug';
 import { Application } from 'express';
@@ -29,7 +29,7 @@ class AppServer {
         this.httpServer = http.createServer(express);
 
         this.httpServer.on('error', (error: any): void => {
-            serverErrorHandle(error, port);
+            ServerErrorHandler.handle(error, port);
         });
 
         this.httpServer.on('listening', (): void => {

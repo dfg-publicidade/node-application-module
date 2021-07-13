@@ -22,7 +22,7 @@ class AppServer {
         express.set('port', port);
         this.httpServer = http_1.default.createServer(express);
         this.httpServer.on('error', (error) => {
-            node_handler_module_1.serverErrorHandle(error, port);
+            node_handler_module_1.ServerErrorHandler.handle(error, port);
         });
         this.httpServer.on('listening', () => {
             const addr = this.httpServer.address();
