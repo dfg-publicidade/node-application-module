@@ -21,6 +21,12 @@ abstract class Application {
         try {
             debug('Starting application');
 
+            this.appInfo = {
+                name: process.env.APP_NAME,
+                version: process.env.APP_VERSION,
+                taskServer: process.env.APP_TASKSERVER === 'true'
+            };
+
             debug('Running startup scripts...');
             await this.runStartupScripts();
 
@@ -28,11 +34,7 @@ abstract class Application {
             await this.startDatabases();
 
             this.app = new App({
-                appInfo: {
-                    name: process.env.APP_NAME,
-                    version: process.env.APP_VERSION,
-                    taskServer: process.env.APP_TASKSERVER === 'true'
-                },
+                appInfo: this.appInfo,
                 config
             });
 

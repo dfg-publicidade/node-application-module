@@ -21,16 +21,17 @@ class Application {
     async start() {
         try {
             debug('Starting application');
+            this.appInfo = {
+                name: process.env.APP_NAME,
+                version: process.env.APP_VERSION,
+                taskServer: process.env.APP_TASKSERVER === 'true'
+            };
             debug('Running startup scripts...');
             await this.runStartupScripts();
             debug('Starting databases...');
             await this.startDatabases();
             this.app = new node_app_module_1.default({
-                appInfo: {
-                    name: process.env.APP_NAME,
-                    version: process.env.APP_VERSION,
-                    taskServer: process.env.APP_TASKSERVER === 'true'
-                },
+                appInfo: this.appInfo,
                 config
             });
             debug('Setting complementar app info.');

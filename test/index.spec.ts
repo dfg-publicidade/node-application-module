@@ -219,7 +219,7 @@ class TestApplication extends Application {
         }
 
         if (this.flag === 'taskServer') {
-            process.env.APP_TASKSERVER = 'true';
+            this.appInfo.taskServer = true;
         }
 
         if (this.flag === 'development') {
