@@ -5,9 +5,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AppServer = exports.DefaultAppBuilder = void 0;
 const node_app_module_1 = __importDefault(require("@dfgpublicidade/node-app-module"));
-const node_files_module_1 = __importDefault(require("@dfgpublicidade/node-files-module"));
 const node_tasks_module_1 = require("@dfgpublicidade/node-tasks-module");
-const app_root_path_1 = __importDefault(require("app-root-path"));
 const config_1 = __importDefault(require("config"));
 const debug_1 = __importDefault(require("debug"));
 const appServer_1 = __importDefault(require("./server/appServer"));
@@ -23,14 +21,16 @@ class Application {
     async start() {
         try {
             debug('Starting application');
-            this.appInfo = await node_files_module_1.default.getJson(`${app_root_path_1.default}/app.json`);
-            debug('App info. loaded');
             debug('Running startup scripts...');
             await this.runStartupScripts();
             debug('Starting databases...');
             await this.startDatabases();
             this.app = new node_app_module_1.default({
-                appInfo: this.appInfo,
+                appInfo: {
+                    name: process.env.APP_NAME,
+                    version: process.env.APP_VERSION,
+                    taskServer: process.env.APP_TASKSERVER === 'true'
+                },
                 config
             });
             debug('Setting complementar app info.');

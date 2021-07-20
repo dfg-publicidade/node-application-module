@@ -211,14 +211,15 @@ class TestApplication extends Application {
     }
 
     protected async runStartupScripts(): Promise<void> {
-        this.appInfo.name = 'sys';
+        process.env.APP_NAME = 'sys';
+        process.env.APP_VERSION = 'v1';
 
         if (this.flag === 'mustFail') {
             throw new Error('Error');
         }
 
         if (this.flag === 'taskServer') {
-            this.appInfo.taskServer = true;
+            process.env.APP_TASKSERVER = 'true';
         }
 
         if (this.flag === 'development') {

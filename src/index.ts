@@ -1,7 +1,5 @@
 import App, { AppInfo } from '@dfgpublicidade/node-app-module';
-import Files from '@dfgpublicidade/node-files-module';
 import { DefaultTaskManager, TaskServer } from '@dfgpublicidade/node-tasks-module';
-import appRoot from 'app-root-path';
 import cfg from 'config';
 import appDebugger from 'debug';
 import AppServer from './server/appServer';
@@ -23,10 +21,6 @@ abstract class Application {
         try {
             debug('Starting application');
 
-            this.appInfo = await Files.getJson(`${appRoot}/app.json`);
-
-            debug('App info. loaded');
-
             debug('Running startup scripts...');
             await this.runStartupScripts();
 
@@ -34,7 +28,11 @@ abstract class Application {
             await this.startDatabases();
 
             this.app = new App({
-                appInfo: this.appInfo,
+                appInfo: {
+                    name: process.env.APP_NAME,
+                    version: process.env.APP_VERSION,
+                    taskServer: process.env.APP_TASKSERVER === 'true'
+                },
                 config
             });
 
