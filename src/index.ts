@@ -27,23 +27,25 @@ abstract class Application {
                 taskServer: process.env.APP_TASKSERVER === 'true'
             };
 
-            this.config = JSON.stringify({ ...cfg });
-
-            for (const key of Object.keys(process.env)) {
-                this.config = this.config.replace(new RegExp('\\$' + key, 'ig'), process.env[key]);
-            }
-
-            this.config = JSON.parse(this.config);
-
             debug('Running startup scripts...');
             await this.runStartupScripts();
 
             debug('Starting databases...');
             await this.startDatabases();
 
+            let config: any = _.merge(cfg, await this.loadDynamicConfig());
+
+            config = JSON.stringify(config);
+
+            for (const key of Object.keys(process.env)) {
+                config = config.replace(new RegExp('\\$' + key, 'ig'), process.env[key]);
+            }
+
+            this.config = JSON.parse(config);
+
             this.app = new App({
                 appInfo: this.appInfo,
-                config: _.merge(this.config, await this.loadDynamicConfig())
+                config: this.config
             });
 
             debug('Setting complementar app info.');
