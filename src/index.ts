@@ -30,7 +30,7 @@ abstract class Application {
             this.config = JSON.stringify({ ...cfg });
 
             for (const key of Object.keys(process.env)) {
-                this.config = this.config.replace(new RegExp('\\$' + key), process.env[key]);
+                this.config = this.config.replace(new RegExp('\\$' + key, 'ig'), process.env[key]);
             }
 
             this.config = JSON.parse(this.config);
