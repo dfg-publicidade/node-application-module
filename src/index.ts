@@ -17,6 +17,16 @@ abstract class Application {
     protected appInfo: AppInfo;
     protected app: App;
 
+    private static replaceVars(obj: any): any {
+        let str: string = JSON.stringify(obj);
+
+        for (const key of Object.keys(process.env)) {
+            str = str.replace(new RegExp('\\$' + key, 'ig'), process.env[key]);
+        }
+
+        return JSON.parse(str);
+    }
+
     public async start(): Promise<(AppServer | TaskServer)[]> {
         try {
             debug('Starting application');
@@ -30,20 +40,12 @@ abstract class Application {
             debug('Running startup scripts...');
             await this.runStartupScripts();
 
-            this.config = { ...cfg };
+            this.config = Application.replaceVars({ ...cfg });
 
             debug('Starting databases...');
             await this.startDatabases();
 
-            let config: any = _.merge(this.config, await this.loadDynamicConfig());
-
-            config = JSON.stringify(config);
-
-            for (const key of Object.keys(process.env)) {
-                config = config.replace(new RegExp('\\$' + key, 'ig'), process.env[key]);
-            }
-
-            this.config = JSON.parse(config);
+            this.config = Application.replaceVars(_.merge(this.config, await this.loadDynamicConfig()));
 
             this.app = new App({
                 appInfo: this.appInfo,

@@ -6,6 +6,7 @@ declare abstract class Application {
     protected config: any;
     protected appInfo: AppInfo;
     protected app: App;
+    private static replaceVars;
     start(): Promise<(AppServer | TaskServer)[]>;
     private startAppServer;
     private startTaskServer;

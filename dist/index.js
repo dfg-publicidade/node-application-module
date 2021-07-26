@@ -18,6 +18,13 @@ let appServer;
 let taskServer;
 const debug = debug_1.default('module:app');
 class Application {
+    static replaceVars(obj) {
+        let str = JSON.stringify(obj);
+        for (const key of Object.keys(process.env)) {
+            str = str.replace(new RegExp('\\$' + key, 'ig'), process.env[key]);
+        }
+        return JSON.parse(str);
+    }
     async start() {
         try {
             debug('Starting application');
@@ -28,15 +35,10 @@ class Application {
             };
             debug('Running startup scripts...');
             await this.runStartupScripts();
-            this.config = Object.assign({}, config_1.default);
+            this.config = Application.replaceVars(Object.assign({}, config_1.default));
             debug('Starting databases...');
             await this.startDatabases();
-            let config = lodash_1.default.merge(this.config, await this.loadDynamicConfig());
-            config = JSON.stringify(config);
-            for (const key of Object.keys(process.env)) {
-                config = config.replace(new RegExp('\\$' + key, 'ig'), process.env[key]);
-            }
-            this.config = JSON.parse(config);
+            this.config = Application.replaceVars(lodash_1.default.merge(this.config, await this.loadDynamicConfig()));
             this.app = new node_app_module_1.default({
                 appInfo: this.appInfo,
                 config: this.config
