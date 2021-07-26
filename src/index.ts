@@ -30,10 +30,12 @@ abstract class Application {
             debug('Running startup scripts...');
             await this.runStartupScripts();
 
+            this.config = { ...cfg };
+
             debug('Starting databases...');
             await this.startDatabases();
 
-            let config: any = _.merge(cfg, await this.loadDynamicConfig());
+            let config: any = _.merge(this.config, await this.loadDynamicConfig());
 
             config = JSON.stringify(config);
 

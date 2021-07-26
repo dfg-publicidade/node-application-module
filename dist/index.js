@@ -28,9 +28,10 @@ class Application {
             };
             debug('Running startup scripts...');
             await this.runStartupScripts();
+            this.config = Object.assign({}, config_1.default);
             debug('Starting databases...');
             await this.startDatabases();
-            let config = lodash_1.default.merge(config_1.default, await this.loadDynamicConfig());
+            let config = lodash_1.default.merge(this.config, await this.loadDynamicConfig());
             config = JSON.stringify(config);
             for (const key of Object.keys(process.env)) {
                 config = config.replace(new RegExp('\\$' + key, 'ig'), process.env[key]);
