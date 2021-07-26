@@ -2,10 +2,9 @@ import App, { AppInfo } from '@dfgpublicidade/node-app-module';
 import { DefaultTaskManager, TaskServer } from '@dfgpublicidade/node-tasks-module';
 import cfg from 'config';
 import appDebugger from 'debug';
+import _ from 'lodash';
 import AppServer from './server/appServer';
 import DefaultAppBuilder from './server/defaultAppBuilder';
-
-const config: any = { ...cfg };
 
 /* Module */
 let appServer: AppServer;
@@ -14,6 +13,7 @@ let taskServer: TaskServer;
 const debug: appDebugger.IDebugger = appDebugger('module:app');
 
 abstract class Application {
+    protected config: any;
     protected appInfo: AppInfo;
     protected app: App;
 
@@ -27,6 +27,14 @@ abstract class Application {
                 taskServer: process.env.APP_TASKSERVER === 'true'
             };
 
+            this.config = JSON.stringify({ ...cfg });
+
+            for (const key of Object.keys(process.env)) {
+                this.config = this.config.replace(new RegExp('\\$' + key), process.env[key]);
+            }
+
+            this.config = JSON.parse(this.config);
+
             debug('Running startup scripts...');
             await this.runStartupScripts();
 
@@ -35,7 +43,7 @@ abstract class Application {
 
             this.app = new App({
                 appInfo: this.appInfo,
-                config
+                config: _.merge(this.config, await this.loadDynamicConfig())
             });
 
             debug('Setting complementar app info.');
@@ -69,7 +77,7 @@ abstract class Application {
         const appBuilder: DefaultAppBuilder = await this.createAppBuilder();
         appServer = new AppServer(appBuilder);
 
-        await appServer.start(config);
+        await appServer.start(this.config);
 
         debug('App server started');
 
@@ -93,6 +101,8 @@ abstract class Application {
     protected abstract startTranslation(): Promise<void>;
 
     protected abstract startDatabases(): Promise<any[]>;
+
+    protected abstract loadDynamicConfig(): Promise<any>;
 
     protected abstract stopDatabases(): Promise<any[]>;
 

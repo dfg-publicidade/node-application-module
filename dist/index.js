@@ -8,11 +8,11 @@ const node_app_module_1 = __importDefault(require("@dfgpublicidade/node-app-modu
 const node_tasks_module_1 = require("@dfgpublicidade/node-tasks-module");
 const config_1 = __importDefault(require("config"));
 const debug_1 = __importDefault(require("debug"));
+const lodash_1 = __importDefault(require("lodash"));
 const appServer_1 = __importDefault(require("./server/appServer"));
 exports.AppServer = appServer_1.default;
 const defaultAppBuilder_1 = __importDefault(require("./server/defaultAppBuilder"));
 exports.DefaultAppBuilder = defaultAppBuilder_1.default;
-const config = Object.assign({}, config_1.default);
 /* Module */
 let appServer;
 let taskServer;
@@ -26,13 +26,18 @@ class Application {
                 version: process.env.APP_VERSION,
                 taskServer: process.env.APP_TASKSERVER === 'true'
             };
+            this.config = JSON.stringify(Object.assign({}, config_1.default));
+            for (const key of Object.keys(process.env)) {
+                this.config = this.config.replace(new RegExp('\\$' + key), process.env[key]);
+            }
+            this.config = JSON.parse(this.config);
             debug('Running startup scripts...');
             await this.runStartupScripts();
             debug('Starting databases...');
             await this.startDatabases();
             this.app = new node_app_module_1.default({
                 appInfo: this.appInfo,
-                config
+                config: lodash_1.default.merge(this.config, await this.loadDynamicConfig())
             });
             debug('Setting complementar app info.');
             await this.setComplAppInfo();
@@ -58,7 +63,7 @@ class Application {
     async startAppServer() {
         const appBuilder = await this.createAppBuilder();
         appServer = new appServer_1.default(appBuilder);
-        await appServer.start(config);
+        await appServer.start(this.config);
         debug('App server started');
         return Promise.resolve(appServer);
     }

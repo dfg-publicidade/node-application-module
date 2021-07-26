@@ -1,6 +1,8 @@
 {
-    "api": {
+    "application": {
+        "name": "$APP_NAME"
     },
+    "api": {},
     "tasks": {
         "period": "* * * * * *"
     }

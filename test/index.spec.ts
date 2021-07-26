@@ -256,6 +256,12 @@ class TestApplication extends Application {
         return Promise.resolve();
     }
 
+    protected async loadDynamicConfig(): Promise<any> {
+        return Promise.resolve({
+            test1: 'test'
+        });
+    }
+
     protected async stopDatabases(): Promise<any[]> {
         return Promise.all([
             DataBase1.close(),
@@ -326,6 +332,8 @@ describe('index.ts', (): void => {
         expect(DataBase1.isConnected()).to.be.eq(true);
         expect(DataBase2.isConnected()).to.be.eq(true);
         expect(app.getApp().get('connectionName')).to.be.eq('test');
+        expect(app.getApp().config.application.name).to.be.eq(process.env.APP_NAME);
+        expect(app.getApp().config.test1).to.be.eq('test');
         expect(app.translationLoaded).to.be.eq(true);
         expect(app.taskManager).to.be.undefined;
         expect(logMsg).to.be.undefined;
@@ -393,6 +401,8 @@ describe('index.ts', (): void => {
         expect(DataBase1.isConnected()).to.be.eq(true);
         expect(DataBase2.isConnected()).to.be.eq(true);
         expect(app.getApp().get('connectionName')).to.be.eq('test');
+        expect(app.getApp().config.application.name).to.be.eq(process.env.APP_NAME);
+        expect(app.getApp().config.test1).to.be.eq('test');
         expect(app.translationLoaded).to.be.eq(true);
         expect(app.taskManager).to.be.undefined;
         expect(logMsg).to.be.undefined;
@@ -465,6 +475,8 @@ describe('index.ts', (): void => {
         expect(DataBase1.isConnected()).to.be.eq(true);
         expect(DataBase2.isConnected()).to.be.eq(true);
         expect(app.getApp().get('connectionName')).to.be.eq('test');
+        expect(app.getApp().config.application.name).to.be.eq(process.env.APP_NAME);
+        expect(app.getApp().config.test1).to.be.eq('test');
         expect(app.translationLoaded).to.be.eq(true);
         expect(app.taskManager).to.be.undefined;
         expect(logMsg).to.be.undefined;
@@ -520,6 +532,7 @@ describe('index.ts', (): void => {
         expect(DataBase1.isConnected()).to.be.eq(true);
         expect(DataBase2.isConnected()).to.be.eq(true);
         expect(app.getApp().get('connectionName')).to.be.eq('test');
+        expect(app.getApp().config.test1).to.be.eq('test');
         expect(app.translationLoaded).to.be.eq(true);
         expect(app.appBuilder).to.be.undefined;
         expect(logMsg).to.be.undefined;
