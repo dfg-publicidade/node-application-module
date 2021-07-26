@@ -28,7 +28,7 @@ class Application {
             };
             this.config = JSON.stringify(Object.assign({}, config_1.default));
             for (const key of Object.keys(process.env)) {
-                this.config = this.config.replace(new RegExp('\\$' + key), process.env[key]);
+                this.config = this.config.replace(new RegExp('\\$' + key, 'ig'), process.env[key]);
             }
             this.config = JSON.parse(this.config);
             debug('Running startup scripts...');
