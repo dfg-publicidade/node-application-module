@@ -18,6 +18,8 @@ abstract class Application {
     protected app: App;
 
     private static replaceVars(obj: any): any {
+        delete obj._id;
+
         let str: string = JSON.stringify(obj);
 
         for (const key of Object.keys(process.env)) {

@@ -19,6 +19,7 @@ let taskServer;
 const debug = debug_1.default('module:app');
 class Application {
     static replaceVars(obj) {
+        delete obj._id;
         let str = JSON.stringify(obj);
         for (const key of Object.keys(process.env)) {
             str = str.replace(new RegExp('\\$' + key, 'ig'), process.env[key]);
