@@ -20,8 +20,8 @@ class DefaultAppBuilder {
             ? express_ws_1.default(express_1.default()).app
             : express_1.default();
         this.setDependencies();
-        this.setInterceptions();
         this.setParsers();
+        this.setInterceptions();
         this.setRouting();
         this.setErrorHandling();
         debug('Application started');

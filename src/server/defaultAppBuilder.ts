@@ -24,8 +24,8 @@ abstract class DefaultAppBuilder {
             : express();
 
         this.setDependencies();
-        this.setInterceptions();
         this.setParsers();
+        this.setInterceptions();
 
         this.setRouting();
 
