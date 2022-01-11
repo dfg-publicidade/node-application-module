@@ -9,7 +9,7 @@ const debug_1 = __importDefault(require("debug"));
 const express_ws_1 = __importDefault(require("express-ws"));
 const http_1 = __importDefault(require("http"));
 /* Module */
-const debug = debug_1.default('module:server');
+const debug = (0, debug_1.default)('module:server');
 class AppServer {
     constructor(appBuilder) {
         this.appBuilder = appBuilder;
@@ -29,7 +29,7 @@ class AppServer {
             debug(`Listening ${node_util_module_1.default.parsePort(addr.port)}`);
         });
         if ((_a = config.websocket) === null || _a === void 0 ? void 0 : _a.enabled) {
-            express_ws_1.default(express, this.httpServer, config.websocket);
+            (0, express_ws_1.default)(express, this.httpServer, config.websocket);
         }
         this.httpServer.listen(port);
         return Promise.resolve();

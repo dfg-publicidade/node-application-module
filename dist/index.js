@@ -16,7 +16,7 @@ exports.DefaultAppBuilder = defaultAppBuilder_1.default;
 /* Module */
 let appServer;
 let taskServer;
-const debug = debug_1.default('module:app');
+const debug = (0, debug_1.default)('module:app');
 class Application {
     static replaceVars(obj) {
         delete obj._id;

@@ -8,7 +8,7 @@ const debug_1 = __importDefault(require("debug"));
 const express_1 = __importDefault(require("express"));
 const express_ws_1 = __importDefault(require("express-ws"));
 /* Module */
-const debug = debug_1.default('module:app-builder');
+const debug = (0, debug_1.default)('module:app-builder');
 class DefaultAppBuilder {
     constructor(app) {
         this.app = app;
@@ -17,8 +17,8 @@ class DefaultAppBuilder {
         var _a;
         debug('Building application');
         this.express = ((_a = this.app.config.websocket) === null || _a === void 0 ? void 0 : _a.enabled)
-            ? express_ws_1.default(express_1.default()).app
-            : express_1.default();
+            ? (0, express_ws_1.default)((0, express_1.default)()).app
+            : (0, express_1.default)();
         this.setDependencies();
         this.setParsers();
         this.setInterceptions();
