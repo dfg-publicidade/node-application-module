@@ -35,7 +35,9 @@ class DefaultAppBuilder {
             this.router.get('/', node_controllers_module_1.RootController.main());
             this.setAdditionalControllers();
             routerSetup(this.app, this.router);
-            this.express.use(`/${endpointGroup}/${this.app.info.version}`, this.router);
+            this.express.use(process.env.NODE_ENV !== 'development'
+                ? '/'
+                : `/${endpointGroup}/${this.app.info.version}`, this.router);
         }
     }
 }

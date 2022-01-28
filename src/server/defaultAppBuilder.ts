@@ -49,7 +49,12 @@ abstract class DefaultAppBuilder {
 
             routerSetup(this.app, this.router);
 
-            this.express.use(`/${endpointGroup}/${this.app.info.version}`, this.router);
+            this.express.use(
+                process.env.NODE_ENV !== 'development'
+                    ? '/'
+                    : `/${endpointGroup}/${this.app.info.version}`
+                , this.router
+            );
         }
     }
 
