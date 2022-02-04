@@ -50,7 +50,7 @@ abstract class DefaultAppBuilder {
             routerSetup(this.app, this.router);
 
             this.express.use(
-                process.env.NODE_ENV !== 'development'
+                process.env.NODE_ENV !== 'default' && process.env.NODE_ENV !== 'development'
                     ? '/'
                     : `/${endpointGroup}/${this.app.info.version}`
                 , this.router
